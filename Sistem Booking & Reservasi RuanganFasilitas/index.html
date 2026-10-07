@@ -1,0 +1,839 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Aplikasi Booking & Reservasi Ruangan Rapat / Fasilitas Kantor</title>
+
+  <!-- Google Fonts - Plus Jakarta Sans -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+  <style>
+    /* ==========================================================================
+       1. GLOBAL & RESET STYLES (Clean Light / Neutral White Theme)
+       ========================================================================== */
+    :root {
+      --bg-body: #f8fafc;
+      --bg-card: #ffffff;
+      --border-color: #e2e8f0;
+      --border-focus: #0f172a;
+      --text-main: #0f172a;
+      --text-muted: #64748b;
+      --btn-primary: #0f172a;
+      --btn-hover: #1e293b;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+    }
+
+    body {
+      background-color: var(--bg-body);
+      color: var(--text-main);
+      padding: 24px 16px;
+      line-height: 1.5;
+    }
+
+    .app-wrapper {
+      max-width: 1240px;
+      margin: 0 auto;
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+
+    /* Switcher Role Bar */
+    .view-switcher {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      padding: 12px 20px;
+      border-radius: 12px;
+    }
+
+    .switcher-brand {
+      font-weight: 700;
+      font-size: 15px;
+      color: var(--text-main);
+    }
+
+    .nav-tabs {
+      display: flex;
+      gap: 8px;
+    }
+
+    .tab-btn {
+      background: #f1f5f9;
+      color: var(--text-muted);
+      border: 1px solid var(--border-color);
+      padding: 8px 16px;
+      border-radius: 8px;
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .tab-btn.active {
+      background: var(--btn-primary);
+      color: #ffffff;
+      border-color: var(--btn-primary);
+    }
+
+    /* Header Component */
+    .header-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: 12px;
+      padding: 24px;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.02);
+    }
+
+    .sub-tag {
+      display: inline-block;
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--text-muted);
+      background: #f1f5f9;
+      padding: 4px 10px;
+      border-radius: 6px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-bottom: 8px;
+    }
+
+    .sub-tag.admin-tag {
+      background: #0f172a;
+      color: #ffffff;
+    }
+
+    .header-card h1 {
+      font-size: 22px;
+      font-weight: 700;
+      color: var(--text-main);
+      margin-bottom: 4px;
+    }
+
+    .header-card p {
+      font-size: 14px;
+      color: var(--text-muted);
+    }
+
+    /* View Containers */
+    .view-section {
+      display: none;
+      flex-direction: column;
+      gap: 20px;
+    }
+
+    .view-section.active {
+      display: flex;
+    }
+
+    /* 2-Column Grid Layout */
+    .main-grid {
+      display: grid;
+      grid-template-columns: 440px 1fr;
+      gap: 20px;
+      align-items: start;
+    }
+
+    /* Card Box */
+    .card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: 12px;
+      padding: 24px;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.02);
+    }
+
+    .card-header {
+      padding-bottom: 14px;
+      margin-bottom: 20px;
+      border-bottom: 1px solid #f1f5f9;
+    }
+
+    .card-header h2 {
+      font-size: 16px;
+      font-weight: 700;
+      color: var(--text-main);
+    }
+
+    /* Form Fields */
+    .form-group {
+      margin-bottom: 16px;
+    }
+
+    .form-row {
+      display: flex;
+      gap: 12px;
+    }
+
+    .form-row .form-group {
+      flex: 1;
+    }
+
+    .form-group label {
+      display: block;
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--text-muted);
+      margin-bottom: 6px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .form-group input,
+    .form-group select {
+      width: 100%;
+      padding: 10px 14px;
+      border: 1px solid #cbd5e1;
+      border-radius: 8px;
+      font-size: 14px;
+      color: var(--text-main);
+      background-color: #ffffff;
+      transition: border-color 0.2s;
+    }
+
+    .form-group input:focus,
+    .form-group select:focus {
+      outline: none;
+      border-color: var(--border-focus);
+    }
+
+    /* Info Box */
+    .info-box {
+      background-color: #f8fafc;
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      padding: 12px 14px;
+      margin-bottom: 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .info-item {
+      font-size: 12px;
+      display: flex;
+      justify-content: space-between;
+    }
+
+    .info-label {
+      color: var(--text-muted);
+      font-weight: 500;
+    }
+
+    .info-val {
+      color: var(--text-main);
+      font-weight: 600;
+    }
+
+    /* Buttons */
+    .btn-submit {
+      width: 100%;
+      background-color: var(--btn-primary);
+      color: #ffffff;
+      border: none;
+      padding: 12px 16px;
+      border-radius: 8px;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background-color 0.2s;
+    }
+
+    .btn-submit:hover {
+      background-color: var(--btn-hover);
+    }
+
+    .btn-reset {
+      background-color: #ffffff;
+      color: #991b1b;
+      border: 1px solid #fee2e2;
+      padding: 8px 14px;
+      border-radius: 8px;
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+    }
+
+    .btn-reset:hover {
+      background-color: #fef2f2;
+    }
+
+    /* Cards List (User View) */
+    .booking-list {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .booking-item {
+      border: 1px solid var(--border-color);
+      border-radius: 10px;
+      padding: 16px;
+      background: #ffffff;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .booking-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px dashed var(--border-color);
+      padding-bottom: 8px;
+    }
+
+    .booking-code {
+      font-family: monospace;
+      font-weight: 700;
+      font-size: 13px;
+      background: #f1f5f9;
+      padding: 2px 8px;
+      border-radius: 4px;
+    }
+
+    .status-badge {
+      font-size: 11px;
+      font-weight: 700;
+      padding: 3px 8px;
+      border-radius: 6px;
+    }
+
+    .status-pending { background-color: #fffbebfb; color: #b45309; border: 1px solid #fef3c7; }
+    .status-disetujui { background-color: #f0fdf4; color: #166534; border: 1px solid #dcfce7; }
+    .status-ditolak { background-color: #fef2f2; color: #991b1b; border: 1px solid #fee2e2; }
+
+    .booking-body h3 {
+      font-size: 15px;
+      font-weight: 700;
+      color: var(--text-main);
+    }
+
+    .booking-body p {
+      font-size: 13px;
+      color: var(--text-muted);
+      margin-top: 2px;
+    }
+
+    .empty-state {
+      text-align: center;
+      color: var(--text-muted);
+      font-size: 14px;
+      padding: 40px 20px;
+      background-color: #f8fafc;
+      border: 1px dashed #cbd5e1;
+      border-radius: 8px;
+    }
+
+    /* Admin View Stats Bar & Table */
+    .kpi-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 16px;
+    }
+
+    .kpi-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      padding: 16px 20px;
+      border-radius: 12px;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .kpi-title {
+      font-size: 12px;
+      color: var(--text-muted);
+      font-weight: 600;
+    }
+
+    .kpi-number {
+      font-size: 26px;
+      font-weight: 700;
+      color: var(--text-main);
+      margin-top: 4px;
+    }
+
+    .toolbar-flex {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 20px;
+      flex-wrap: wrap;
+    }
+
+    .search-inputs {
+      display: flex;
+      gap: 10px;
+      flex: 1;
+    }
+
+    .search-inputs input,
+    .search-inputs select {
+      max-width: 240px;
+      padding: 8px 12px;
+      font-size: 13px;
+      border: 1px solid #cbd5e1;
+      border-radius: 8px;
+    }
+
+    .table-frame {
+      overflow-x: auto;
+    }
+
+    .table-custom {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 13px;
+    }
+
+    .table-custom th {
+      background-color: #f8fafc;
+      color: var(--text-muted);
+      padding: 12px;
+      text-align: left;
+      border-bottom: 1px solid var(--border-color);
+      font-weight: 600;
+    }
+
+    .table-custom td {
+      padding: 12px;
+      border-bottom: 1px solid #f1f5f9;
+      vertical-align: middle;
+    }
+
+    .select-compact {
+      padding: 6px 10px;
+      font-size: 12px;
+      border-radius: 6px;
+    }
+
+    @media (max-width: 900px) {
+      .main-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="app-wrapper">
+    <!-- Switcher Mode Portal -->
+    <nav class="view-switcher">
+      <span class="switcher-brand">🏢 Office Meeting & Facility Booking</span>
+      <div class="nav-tabs">
+        <button class="tab-btn active" onclick="switchMode('user')">User Portal</button>
+        <button class="tab-btn" onclick="switchMode('admin')">Admin Approval Dashboard</button>
+      </div>
+    </nav>
+
+    <!-- ==========================================================================
+       2. USER PORTAL VIEW
+       ========================================================================== -->
+    <div id="view-user" class="view-section active">
+      <header class="header-card">
+        <span class="sub-tag">Facility Booking Portal</span>
+        <h1>Pemesanan Ruangan Rapat & Fasilitas Kantor</h1>
+        <p>Cek kapasitas fasilitas, tentukan jadwal jam penggunaan, dan ajukan pengajuan reservasi.</p>
+      </header>
+
+      <main class="main-grid">
+        <!-- Form Booking -->
+        <section class="card">
+          <div class="card-header">
+            <h2>Formulir Pengajuan Ruangan</h2>
+          </div>
+
+          <form id="form-booking">
+            <div class="form-group">
+              <label for="pemohon">Nama Pemohon / Divisi</label>
+              <input type="text" id="pemohon" placeholder="Contoh: Sarah - Tim Marketing" required>
+            </div>
+
+            <div class="form-group">
+              <label for="pilihanRuangan">Pilih Ruangan / Fasilitas</label>
+              <select id="pilihanRuangan" required>
+                <option value="">-- Pilih Ruangan --</option>
+                <option value="Ruang Rapat Utama (Executive)">Ruang Rapat Utama (Executive)</option>
+                <option value="Ruang Diskusi Creative Hub">Ruang Diskusi Creative Hub</option>
+                <option value="Auditorium Presentasi 2">Auditorium Presentasi 2</option>
+                <option value="Podcast Studio & Recording">Podcast Studio & Recording</option>
+              </select>
+            </div>
+
+            <div class="info-box">
+              <div class="info-item">
+                <span class="info-label">Kapasitas Maksimal:</span>
+                <span id="info-kapasitas" class="info-val">-</span>
+              </div>
+              <div class="info-item">
+                <span class="info-label">Fasilitas Termasuk:</span>
+                <span id="info-fasilitas" class="info-val">-</span>
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label for="tanggalBooking">Tanggal Pemakaian</label>
+              <input type="date" id="tanggalBooking" required>
+            </div>
+
+            <div class="form-row">
+              <div class="form-group">
+                <label for="jamMulai">Jam Mulai</label>
+                <input type="time" id="jamMulai" required>
+              </div>
+              <div class="form-group">
+                <label for="jamSelesai">Jam Selesai</label>
+                <input type="time" id="jamSelesai" required>
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label for="keperluan">Keperluan / Agenda Meeting</label>
+              <input type="text" id="keperluan" placeholder="Contoh: Rapat Koordinasi Q3" required>
+            </div>
+
+            <button type="submit" class="btn-submit">Kirim Pengajuan Booking</button>
+          </form>
+        </section>
+
+        <!-- Daftar Booking Saya -->
+        <section class="card">
+          <div class="card-header">
+            <h2>Riwayat Pengajuan Booking Saya</h2>
+          </div>
+
+          <div class="booking-list" id="container-booking-user">
+            <div class="empty-state">
+              <p>Belum ada jadwal booking yang diajukan. Silakan isi formulir.</p>
+            </div>
+          </div>
+        </section>
+      </main>
+    </div>
+
+    <!-- ==========================================================================
+       3. ADMIN DASHBOARD VIEW
+       ========================================================================== -->
+    <div id="view-admin" class="view-section">
+      <header class="header-card">
+        <span class="sub-tag admin-tag">Admin Approval</span>
+        <h1>Dashboard Persetujuan Ruangan Kantor</h1>
+        <p>Verifikasi bentrok jadwal, setujui atau tolak pengajuan penggunaan fasilitas kantor.</p>
+      </header>
+
+      <div class="kpi-grid">
+        <div class="kpi-card">
+          <span class="kpi-title">Total Pengajuan</span>
+          <span class="kpi-number" id="stat-total">0</span>
+        </div>
+        <div class="kpi-card">
+          <span class="kpi-title">Menunggu Approval</span>
+          <span class="kpi-number" id="stat-pending">0</span>
+        </div>
+        <div class="kpi-card">
+          <span class="kpi-title">Disetujui</span>
+          <span class="kpi-number" id="stat-disetujui">0</span>
+        </div>
+        <div class="kpi-card">
+          <span class="kpi-title">Ditolak</span>
+          <span class="kpi-number" id="stat-ditolak">0</span>
+        </div>
+      </div>
+
+      <section class="card">
+        <div class="toolbar-flex">
+          <div class="search-inputs">
+            <input type="text" id="admin-search" placeholder="Cari Kode, Pemohon, atau Ruangan..." onkeyup="renderAdminTable()">
+            <select id="admin-filter-status" onchange="renderAdminTable()">
+              <option value="semua">Semua Status</option>
+              <option value="Pending">Pending</option>
+              <option value="Disetujui">Disetujui</option>
+              <option value="Ditolak">Ditolak</option>
+            </select>
+          </div>
+          <button class="btn-reset" onclick="resetDatabase()">Reset Riwayat Booking</button>
+        </div>
+
+        <div class="table-frame">
+          <table class="table-custom">
+            <thead>
+              <tr>
+                <th>Kode & Pemohon</th>
+                <th>Ruangan & Agenda</th>
+                <th>Tanggal & Durasi Waktu</th>
+                <th>Status Approval</th>
+                <th>Aksi Verifikasi</th>
+              </tr>
+            </thead>
+            <tbody id="tabel-admin-body">
+              <!-- Render via JS -->
+            </tbody>
+          </table>
+        </div>
+      </section>
+    </div>
+  </div>
+
+  <!-- ==========================================================================
+     4. JAVASCRIPT LOGIC
+     ========================================================================== -->
+  <script>
+    const STORAGE_KEY_BOOKING = 'DATA_OFFICE_FACILITY_BOOKING_APP';
+
+    // Database Ruangan
+    const ROOM_DB = {
+      "Ruang Rapat Utama (Executive)": {
+        kapasitas: "20 Orang",
+        fasilitas: "Smart TV, Proyektor, Video Conf, Snack"
+      },
+      "Ruang Diskusi Creative Hub": {
+        kapasitas: "8 Orang",
+        fasilitas: "Whiteboard, TV Display, High-Speed Wi-Fi"
+      },
+      "Auditorium Presentasi 2": {
+        kapasitas: "50 Orang",
+        fasilitas: "Sound System, Mic Wireless, Stage, Podium"
+      },
+      "Podcast Studio & Recording": {
+        kapasitas: "4 Orang",
+        fasilitas: "Soundproof, Professional Mic, Mixer, Lighting"
+      }
+    };
+
+    // DOM Elements
+    const formBooking = document.getElementById('form-booking');
+    const pilihanRuangan = document.getElementById('pilihanRuangan');
+    const infoKapasitas = document.getElementById('info-kapasitas');
+    const infoFasilitas = document.getElementById('info-fasilitas');
+    const containerBookingUser = document.getElementById('container-booking-user');
+
+    // Init App
+    window.addEventListener('DOMContentLoaded', () => {
+      // Auto set tanggal hari ini
+      const inputTanggal = document.getElementById('tanggalBooking');
+      if (inputTanggal) {
+        inputTanggal.valueAsDate = new Date();
+      }
+      renderUserBookings();
+      renderAdminTable();
+    });
+
+    // Switch View (User <-> Admin)
+    function switchMode(mode) {
+      const tabBtns = document.querySelectorAll('.tab-btn');
+      tabBtns.forEach(btn => btn.classList.remove('active'));
+
+      document.getElementById('view-user').classList.remove('active');
+      document.getElementById('view-admin').classList.remove('active');
+
+      if (mode === 'user') {
+        document.getElementById('view-user').classList.add('active');
+        tabBtns[0].classList.add('active');
+        renderUserBookings();
+      } else {
+        document.getElementById('view-admin').classList.add('active');
+        tabBtns[1].classList.add('active');
+        renderAdminTable();
+      }
+    }
+
+    // Dynamic Info Ruangan
+    if (pilihanRuangan) {
+      pilihanRuangan.addEventListener('change', () => {
+        const selected = pilihanRuangan.value;
+        if (selected && ROOM_DB[selected]) {
+          infoKapasitas.innerText = ROOM_DB[selected].kapasitas;
+          infoFasilitas.innerText = ROOM_DB[selected].fasilitas;
+        } else {
+          infoKapasitas.innerText = '-';
+          infoFasilitas.innerText = '-';
+        }
+      });
+    }
+
+    // Submit Booking
+    if (formBooking) {
+      formBooking.addEventListener('submit', function (e) {
+        e.preventDefault();
+
+        const pemohon = document.getElementById('pemohon').value.trim();
+        const ruangan = pilihanRuangan.value;
+        const tanggal = document.getElementById('tanggalBooking').value;
+        const jamMulai = document.getElementById('jamMulai').value;
+        const jamSelesai = document.getElementById('jamSelesai').value;
+        const keperluan = document.getElementById('keperluan').value.trim();
+
+        if (!ruangan) {
+          alert('Pilih ruangan terlebih dahulu!');
+          return;
+        }
+
+        if (jamMulai >= jamSelesai) {
+          alert('Jam selesai harus lebih akhir dari jam mulai!');
+          return;
+        }
+
+        const kodeBooking = 'BKG-' + Math.floor(1000 + Math.random() * 9000);
+
+        const bookingBaru = {
+          id: Date.now().toString(),
+          kode: kodeBooking,
+          pemohon: pemohon,
+          ruangan: ruangan,
+          tanggal: tanggal,
+          jamMulai: jamMulai,
+          jamSelesai: jamSelesai,
+          keperluan: keperluan,
+          status: 'Pending',
+          waktuPengajuan: new Date().toLocaleDateString('id-ID')
+        };
+
+        const listBooking = JSON.parse(localStorage.getItem(STORAGE_KEY_BOOKING)) || [];
+        listBooking.unshift(bookingBaru);
+        localStorage.setItem(STORAGE_KEY_BOOKING, JSON.stringify(listBooking));
+
+        alert(`Pengajuan Berhasil!\nKode Booking: ${kodeBooking}\nSilakan tunggu persetujuan admin.`);
+        formBooking.reset();
+        infoKapasitas.innerText = '-';
+        infoFasilitas.innerText = '-';
+        renderUserBookings();
+      });
+    }
+
+    // Render Booking List (User)
+    function renderUserBookings() {
+      if (!containerBookingUser) return;
+
+      const listBooking = JSON.parse(localStorage.getItem(STORAGE_KEY_BOOKING)) || [];
+      containerBookingUser.innerHTML = '';
+
+      if (listBooking.length === 0) {
+        containerBookingUser.innerHTML = `
+          <div class="empty-state">
+            <p>Belum ada jadwal booking yang diajukan. Silakan isi formulir.</p>
+          </div>
+        `;
+        return;
+      }
+
+      listBooking.forEach(item => {
+        const statusClass = item.status.toLowerCase();
+        const cardHtml = `
+          <div class="booking-item">
+            <div class="booking-head">
+              <span class="booking-code">${item.kode}</span>
+              <span class="status-badge status-${statusClass}">${item.status}</span>
+            </div>
+            <div class="booking-body">
+              <h3>${item.ruangan}</h3>
+              <p><strong>Pemohon:</strong> ${item.pemohon}</p>
+              <p><strong>Waktu:</strong> ${item.tanggal} (${item.jamMulai} - ${item.jamSelesai})</p>
+              <p><strong>Agenda:</strong> ${item.keperluan}</p>
+            </div>
+          </div>
+        `;
+        containerBookingUser.innerHTML += cardHtml;
+      });
+    }
+
+    // Render Table & KPI (Admin)
+    function renderAdminTable() {
+      const tabelAdminBody = document.getElementById('tabel-admin-body');
+      if (!tabelAdminBody) return;
+
+      const listBooking = JSON.parse(localStorage.getItem(STORAGE_KEY_BOOKING)) || [];
+
+      // Update KPI Stats
+      document.getElementById('stat-total').innerText = listBooking.length;
+      document.getElementById('stat-pending').innerText = listBooking.filter(b => b.status === 'Pending').length;
+      document.getElementById('stat-disetujui').innerText = listBooking.filter(b => b.status === 'Disetujui').length;
+      document.getElementById('stat-ditolak').innerText = listBooking.filter(b => b.status === 'Ditolak').length;
+
+      const query = document.getElementById('admin-search').value.toLowerCase();
+      const selectedStatus = document.getElementById('admin-filter-status').value;
+
+      const filtered = listBooking.filter(item => {
+        const matchText = (item.kode || '').toLowerCase().includes(query) ||
+                          (item.pemohon || '').toLowerCase().includes(query) ||
+                          (item.ruangan || '').toLowerCase().includes(query);
+        const matchStatus = selectedStatus === 'semua' || item.status === selectedStatus;
+        return matchText && matchStatus;
+      });
+
+      tabelAdminBody.innerHTML = '';
+
+      if (filtered.length === 0) {
+        tabelAdminBody.innerHTML = `
+          <tr>
+            <td colspan="5" class="empty-state">Tidak ada data pengajuan booking.</td>
+          </tr>
+        `;
+        return;
+      }
+
+      filtered.forEach(item => {
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+          <td>
+            <span class="booking-code">${item.kode}</span><br>
+            <strong>${item.pemohon}</strong>
+          </td>
+          <td>
+            <strong>${item.ruangan}</strong><br>
+            <small style="color:#64748b">Agenda: ${item.keperluan}</small>
+          </td>
+          <td>
+            ${item.tanggal}<br>
+            <small style="color:#64748b">${item.jamMulai} - ${item.jamSelesai}</small>
+          </td>
+          <td>
+            <span class="status-badge status-${item.status.toLowerCase()}">${item.status}</span>
+          </td>
+          <td>
+            <select class="select-compact" onchange="updateStatusBooking('${item.id}', this.value)">
+              <option value="Pending" ${item.status === 'Pending' ? 'selected' : ''}>Pending</option>
+              <option value="Disetujui" ${item.status === 'Disetujui' ? 'selected' : ''}>Disetujui</option>
+              <option value="Ditolak" ${item.status === 'Ditolak' ? 'selected' : ''}>Ditolak</option>
+            </select>
+          </td>
+        `;
+        tabelAdminBody.appendChild(tr);
+      });
+    }
+
+    // Update Status Booking dari Admin
+    function updateStatusBooking(id, statusBaru) {
+      let listBooking = JSON.parse(localStorage.getItem(STORAGE_KEY_BOOKING)) || [];
+      const idx = listBooking.findIndex(b => b.id === id);
+
+      if (idx !== -1) {
+        listBooking[idx].status = statusBaru;
+        localStorage.setItem(STORAGE_KEY_BOOKING, JSON.stringify(listBooking));
+        renderAdminTable();
+      }
+    }
+
+    // Reset Database
+    function resetDatabase() {
+      if (confirm('Hapus seluruh riwayat booking ruangan?')) {
+        localStorage.removeItem(STORAGE_KEY_BOOKING);
+        renderAdminTable();
+        renderUserBookings();
+      }
+    }
+  </script>
+</body>
+</html>
